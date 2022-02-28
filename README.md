@@ -2,6 +2,8 @@
 
 Welcome back! In project one, we focused on deploying the LAMP stack, in this project we'll hone in on LEMP. The term LEMP is an acronym that represents: 
 
+'''
+
 **L** –– Linux Operating System
         >> An operating system that manages all of the hardware resources associated with your desktop or laptop, a.k.a., the communication between your software and hardware
 **E** –– Nginx Server **(pronounced as engine-x)**
@@ -10,6 +12,7 @@ Welcome back! In project one, we focused on deploying the LAMP stack, in this pr
         >> An open-source relational database management system
 **P** –– PHP (Hypertext Preprocessor)
         >> A scripting language that communicates with the database MySQL
+'''
 
 The Nginix server used in this project, is the main difference in LEMP versus LAMP.
 
@@ -76,7 +79,6 @@ Next, go back to the AWS console for a moment, and navigate to your running EC2 
 **Reminder:** You'll want to replace anything inside achor tags, '< >,' with your unique values.
 
 
-# Installing the Nginx Web Server
 
 Employing Nginx, a high-performance web server, will help us to display web pages to site visitors. First, we'll need to use the apt package manager to install this package. Run the following commands below to get Nginx installed:
 
