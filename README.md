@@ -300,3 +300,143 @@ Woohoo! We have now fully congirured our LEMP stack.
 
 # Testing PHP with Nginx
 
+We've completed setting up the LEMP stack! Great work! In order to test if Nginx can manage the .php files from our newly configured website, we'll need to create a PHP script. Let's open a new file called info.php within our document root. 
+
+    $ nano /var/www/projectLEMP/info.php
+
+Once a new file opens up, enter in the command below. This PHP code will return information about your server.
+
+    <?php
+phpinfo();
+
+![](./images/20.png)
+
+Make sure to save (CTRL+O), then close the file using CTRL+X, 'Y,' and then 'ENTER'.
+
+We can now head back to our web browser by using the public IP address we set up in our Nginx configuration file. 
+
+A web page should appear like the one below:
+
+![](./images/21.png)
+
+Once you see that everything appears as should be, make sure to remove the file you created, as it contains sensitive information about your PHP environment and your Ubuntu server.
+
+Use the following code below:
+
+    $ sudo rm /var/www/projectLEMP/info.php
+
+This file can always be recreated at a later time, if needed.
+
+# Retrieving data from MySQL database with PHP
+
+In our last step, we're going to create a test database (DB) with simple “To do list” and configure it's accessibility. Doing this will allow the Nginx website to be able to query data from the DB and display it.
+
+Let's create a database named example_database and then create a user named example_user.
+
+    $ sudo mysql
+
+create a new database using the following command:
+
+    mysql> CREATE DATABASE `example_database`;
+
+Now let's create a new user and grant them full privileges on the database we just created.
+
+The command below creates a new user named example_user, using mysql_native_password as default authentication method. For the purposes of this example, our user’s password will be 'password,' but make sure to replace this value with a secure password of your own choosing.
+
+    mysql>  CREATE USER 'example_user'@'%' IDENTIFIED WITH mysql_native_password BY 'password';
+
+Okay, great! Now we need to give this user permission over the example_database database:
+
+    mysql> GRANT ALL ON example_database.* TO 'example_user'@'%';
+
+While they have permission over the database, they'll be restricted from creating or modifying other databases on the server.
+
+Exit the MySQL shell using the following command:
+
+    mysql> exit
+
+![](./images/22.png)
+
+![](./images/23.png)
+
+Let's test whether the example_user has the permissions by logging back into to the MySQL console using the following command:
+
+    $ mysql -u example_user -p
+
+**Please Note:** The '-p' in the command above, will prompt you for the password used when creating the example_user user. 
+
+After logging in to the MySQL console, confirm that you have access to the example_database database:
+
+    mysql> SHOW DATABASES;
+
+This will give you the following output:
+
+![](./images/24.png)
+
+Let's also create a test table named todo_list. From the MySQL console, run the following statement:
+
+    mysql> CREATE TABLE example_database.todo_list (
+    item_id INT AUTO_INCREMENT,
+    content VARCHAR(255),
+    PRIMARY KEY(item_id)
+);
+
+    ![](./images/25.png)
+
+After, Include a few rows of content in the test table. I recommended repeating the next command a few times, using different VALUES:
+
+    mysql> INSERT INTO example_database.todo_list (content) VALUES ("My first important item");
+
+In order to confirm whether the data was successfully saved to your table, use the following command:
+
+    mysql>  SELECT * FROM example_database.todo_list;
+
+You’ll see the following output:
+
+![](./images/26.png)
+
+Once you're able to confirm that you have valid data in your test table, exit the MySQL console:
+
+    mysql> exit
+
+Nice! Now we're able to create a PHP script which we can use to connect to MySQL and query our content.
+
+Create a new PHP file in your custom web root directory using nano:
+
+    $ nano /var/www/projectLEMP/todo_list.php
+
+Let's connect the following PHP script to the MySQL database and queries for the content of the todo_list table, that outputs the  results in a list. You'll know if there is a problem with the database connection, if an exception is thrown.
+
+    <?php
+$user = "example_user";
+$password = "password";
+$database = "example_database";
+$table = "todo_list";
+
+try {
+  $db = new PDO("mysql:host=localhost;dbname=$database", $user, $password);
+  echo "<h2>TODO</h2><ol>";
+  foreach($db->query("SELECT content FROM $table") as $row) {
+    echo "<li>" . $row['content'] . "</li>";
+  }
+  echo "</ol>";
+} catch (PDOException $e) {
+    print "Error!: " . $e->getMessage() . "<br/>";
+    die();
+}
+
+![](./images/27.png)
+
+Save and close the file once you're done editing.
+
+You can now access this page in your web browser by visiting the public IP address configured for your website, with the following command:
+
+    http://<EC2-Public-IP-address>/todo_list.php
+
+You should see a page like the one below, showing the content you’ve inserted in your test table:
+
+![](./images/28.png)
+
+This means our PHP environment is ready to connect and interact with your MySQL server.
+
+Congratulations! We have now successfully completed the web stack implementaion using LEMP!
