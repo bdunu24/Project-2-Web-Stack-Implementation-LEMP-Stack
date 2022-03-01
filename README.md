@@ -2,7 +2,7 @@
 
 Welcome back! In project one, we focused on deploying the LAMP stack, in this project we'll hone in on LEMP. The term LEMP is an acronym that represents: 
 
--**L** –– Linux Operating System
+**L** –– Linux Operating System
         >> An operating system that manages all of the hardware resources associated with your desktop or laptop, a.k.a., the communication between your software and hardware
 
 **E** –– Nginx Server **(pronounced as engine-x)**
