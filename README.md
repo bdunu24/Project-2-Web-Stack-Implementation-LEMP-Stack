@@ -6,10 +6,13 @@ Welcome back! In project one, we focused on deploying the LAMP stack, in this pr
 
 **L** –– Linux Operating System
         >> An operating system that manages all of the hardware resources associated with your desktop or laptop, a.k.a., the communication between your software and hardware
+
 **E** –– Nginx Server **(pronounced as engine-x)**
         >> A high-preforming web server that enables the processing of many requests at the same time
+
 **M** –– MySQL Database
         >> An open-source relational database management system
+
 **P** –– PHP (Hypertext Preprocessor)
         >> A scripting language that communicates with the database MySQL
 '''
@@ -62,31 +65,87 @@ To view your new instance, click the 'View Instances' button at the bottom-right
 
 # Connecting to your EC2 from your local PC
 
-We'll now connect to our instance.
-
 **FRIENDLY REMINDER––** Anchor tags(< >) will be used to indicate contents that must be replaced with your unique values. For example, if you have a file named "keypair123.pem" you must enter this information within the corresponding anchor tag: < private-key-name >
 
-Now let's connect to our instance!
+Let's connect to our instance!
 
-Begin by opening Terminal. Once you have opened Terminal, use the cd command to change into the directory that your key pair is located. This is usually the ~/Downloads directory. If you are having difficulty finding it, you can use the ls command to list the contents of your current directory.
+Begin by opening Terminal. Once you have opened Terminal, use the 'cd' command to change into the directory that your key pair is located. This is usually the ~/Downloads directory. If you are having difficulty finding it, you can use the 'ls' command to list the contents of your current directory.
 
 Once you have located the key pair, use the command below to activate the key file (.pem). This command will also change permissions (otherwise you may get the error “Bad Permissions”):
 
-$ sudo chmod 0400 .pem When prompted, type the password for your local PC and press Enter on your keyboard.
+    $ sudo chmod 0400 .pem When prompted, type the password for your local PC and press Enter on your keyboard.
+
+When prompted, type the password for your local PC and press Enter on your keyboard.
 
 Next, go back to the AWS console for a moment, and navigate to your running EC2 instance. Copy the Public IP address, as shown in the image below:
 
-**Reminder:** You'll want to replace anything inside achor tags, '< >,' with your unique values.
+![](./images/1.png)
 
+Once you have copied the Public IP address, head back to your terminal. You'll want to connect to the EC2 instance by using the following command:
 
+    ssh -i <Your-private-key.pem> ubuntu@<EC2-Public-IP-address>
+
+You will be asked if you want to continue connecting. Type 'Yes' and press 'Enter' on your keyboard.
+
+![](./images/2.png)
+
+When connected, your ip-address will be shown on your terminal.
+
+![](./images/2pt2.png)
+
+# Installing the Nginx Web Server
 
 Employing Nginx, a high-performance web server, will help us to display web pages to site visitors. First, we'll need to use the apt package manager to install this package. Run the following commands below to get Nginx installed:
 
     $ sudo apt update
 
-When prompted, enter your email, then follow the next command:
+![](./images/3.png)
+
+Install Nginx by following the command below:
 
     $ sudo apt install nginx
 
-Next, you will be asked if you want to continue connecting. Type 'Yes' and press Enter on your keyboard.
+When prompted, enter 'Y' to confirm installation.
+
+![](./images/5.png)
+
+To verify that your installation was successful and Nginx is now running on your Ubuntu server run the follwing command on your terminal:
+
+    $ sudo systemctl status nginx
+
+If there is a green dot, then you've completed all steps successfully, and it's running.
+
+![](./images/6.png)
+
+Prior to receiving any traffic by our Web Server, we need to open TCP port 80––This is the default port that web browsers utilize in order to access web pages on the Internet.
+
+The EC2 instance on the AWS console we created earlier, opened the TCP port 22 by default. This allowed us to access the EC2 via SSH in Terminal. Now, we must add a rule to the security groups of our EC2 configuration, in order to allow inbound connections through port 80.
+
+Open the AWS Management Console. Click on the security group tab and edit the inbound rules of the running EC2 instance.
+
+![](./images/7.png)
+
+Click on Edit Inbound Rules
+
+![](./images/8.png)
+
+Click on 'Add Rule' and add the HTTP, TCP port 80 and allow source from anywhere by using 0.0.0.0, allowing traffic from any IP address to enter.
+
+![](./images/9.png)
+
+Our server is now running and we can access it locally and from the Internet. We'll now test to see whether or not we can receive traffic. Run the following command to request our Nginx on port 80:
+
+    $ curl http://localhost:80
+
+![](./images/10.png)
+
+Now we'll test and verify our Nginx server access, using the public IP address of the EC2 instance via web browser. 
+
+    http://<Public-IP-Address>:80
+
+The following screenshot is an example of how the Nginx web default page should look like, if no hiccups have been made.
+
+![](./images/11.png)
+
+# Installing MySQL
 
